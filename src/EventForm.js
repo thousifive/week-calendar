@@ -7,29 +7,48 @@ function EventForm(props) {
   const [flexible, setFlexible] = useState(false);
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    let event = {
-      id: props.events.length + 1,
-      title: title,
-      type: selectValue || "other",
-      start: e.currentTarget[2].value
-        ? props.selectEvent.startStr.split("T")[0] +
+    let startDate, endDate;
+    if (e.currentTarget[2].value && e.currentTarget[3].value) {
+      startDate = new Date(
+        props.selectEvent.startStr.split("T")[0] +
           "T" +
           e.currentTarget[2].value +
           ":00+05:30"
-        : props.selectEvent.startStr,
-      end: e.currentTarget[3].value
-        ? props.selectEvent.endStr.split("T")[0] +
+      );
+      endDate = new Date(
+        props.selectEvent.endStr.split("T")[0] +
           "T" +
           e.currentTarget[3].value +
           ":00+05:30"
-        : props.selectEvent.endStr,
-      blocked: false,
-      flexible: selectValue === "meeting" && flexible ? true : false,
-      color: selectValue === "meeting" && "#538dff",
-    };
-    props.setEvents([...props.events, event]);
-    props.setForm(false);
+      );
+    } else {
+      startDate = new Date(props.selectEvent.startStr);
+      endDate = new Date(props.selectEvent.endStr);
+    }
+
+    e.preventDefault();
+    if (
+      startDate < endDate &&
+      startDate.getHours() < 17 &&
+      startDate.getHours() > 10 &&
+      endDate.getHours() < 17 &&
+      endDate.getHours() > 10
+    ) {
+      let event = {
+        id: props.events.length + 1,
+        title: title,
+        type: selectValue || "other",
+        start: startDate,
+        end: endDate,
+        blocked: false,
+        flexible: selectValue === "meeting" && flexible ? true : false,
+        color: selectValue === "meeting" && "#538dff",
+      };
+      props.setEvents([...props.events, event]);
+      props.setForm(false);
+    } else {
+      alert("Please select a time between 9am - 5pm");
+    }
   };
 
   const handleChange = (e) => {

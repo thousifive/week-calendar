@@ -23,7 +23,7 @@ const Calendar = () => {
       title: "event 2",
       type: "meeting",
       start: "2021-10-24T13:00:00",
-      end: "2021-10-24T18:00:00",
+      end: "2021-10-24T17:00:00",
       blocked: false,
       flexible: true,
       color: "#538dff",
@@ -76,6 +76,20 @@ const Calendar = () => {
     setForm(true);
   };
 
+  const handleEventDrop = (e) => {
+    console.log(e);
+    let startDate = new Date(e.event.startStr);
+    let endDate = new Date(e.event.endStr);
+    if (
+      startDate.getHours() > 17 ||
+      startDate.getHours() < 10 ||
+      endDate.getHours() > 17 ||
+      endDate.getHours() < 10
+    ) {
+      e.revert();
+    }
+  };
+
   return (
     <div className="main-div">
       <div id="calendar">
@@ -86,15 +100,15 @@ const Calendar = () => {
             center: "timeGridWeek",
           }}
           editable="true"
-          eventOverlap={false}
+          // eventOverlap={false}
           dayMaxEvents="true"
           events={events} //"https://fullcalendar.io/demo-events.json?overload-day"
           eventColor="#1565c0" //"#538DFF"
           nowIndicator
           selectable="true"
           select={handleForm}
-          eventAdd={(e) => {
-            console.log(e);
+          eventDrop={(e) => {
+            handleEventDrop(e);
           }}
           eventDidMount={(info) => {
             info.el.setAttribute("id", info.event.id);
