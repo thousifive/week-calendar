@@ -12,18 +12,18 @@ function EventForm(props) {
       id: props.events.length + 1,
       title: title,
       type: selectValue || "other",
-      start: e.currentTarget[3].value
+      start: e.currentTarget[2].value
         ? props.selectEvent.startStr.split("T")[0] +
+          "T" +
+          e.currentTarget[2].value +
+          ":00+05:30"
+        : props.selectEvent.startStr,
+      end: e.currentTarget[3].value
+        ? props.selectEvent.endStr.split("T")[0] +
           "T" +
           e.currentTarget[3].value +
           ":00+05:30"
-        : props.selectEvent.startStr,
-      end: e.currentTarget[4].value
-        ? props.selectEvent.startStr.split("T")[0] +
-          "T" +
-          e.currentTarget[4].value +
-          ":00+05:30"
-        : props.selectEvent.startStr,
+        : props.selectEvent.endStr,
       blocked: false,
       flexible: selectValue === "meeting" && flexible ? true : false,
       color: selectValue === "meeting" && "#538dff",
