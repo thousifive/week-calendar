@@ -68,8 +68,9 @@ const Calendar = () => {
   };
 
   const handleForm = (e) => {
-    setForm(!form);
+    setRightclick(false);
     setSelectEvent(e);
+    setForm(true);
   };
 
   return (

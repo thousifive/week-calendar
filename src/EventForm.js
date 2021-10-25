@@ -16,6 +16,7 @@ function EventForm(props) {
       blocked: false,
     };
     props.setEvents([...props.events, event]);
+    props.setForm(false);
   };
 
   const handleChange = (e) => {
@@ -27,7 +28,15 @@ function EventForm(props) {
   };
 
   return (
-    <div className="event-form">
+    <div
+      className="event-form"
+      style={{
+        top: props.selectEvent.jsEvent.pageY,
+        left: props.selectEvent.jsEvent.pageX,
+        zIndex: "3",
+        backgroundColor: "white",
+      }}
+    >
       <div className="event-form-title">
         <h4>Add Event</h4>
         <button className="event-form-close" onClick={closeForm}>
