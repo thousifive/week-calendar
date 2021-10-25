@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import "./App.css";
 
 function EventForm(props) {
-  const [selectValue, setSelectValue] = useState("");
+  const [selectValue, setSelectValue] = useState("Task");
   const [title, setTitle] = useState("");
+  const [flexible, setFlexible] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -11,9 +12,21 @@ function EventForm(props) {
       id: props.events.length + 1,
       title: title,
       type: selectValue || "other",
-      start: props.selectEvent.startStr,
-      end: props.selectEvent.endStr,
+      start: e.currentTarget[3].value
+        ? props.selectEvent.startStr.split("T")[0] +
+          "T" +
+          e.currentTarget[3].value +
+          ":00+05:30"
+        : props.selectEvent.startStr,
+      end: e.currentTarget[4].value
+        ? props.selectEvent.startStr.split("T")[0] +
+          "T" +
+          e.currentTarget[4].value +
+          ":00+05:30"
+        : props.selectEvent.startStr,
       blocked: false,
+      flexible: selectValue === "meeting" && flexible ? true : false,
+      color: selectValue === "meeting" && "#538dff",
     };
     props.setEvents([...props.events, event]);
     props.setForm(false);
@@ -25,6 +38,14 @@ function EventForm(props) {
 
   const closeForm = () => {
     props.setForm(false);
+  };
+
+  const changeFlexible = (e) => {
+    if (e.target.checked) {
+      setFlexible(true);
+    } else {
+      setFlexible(false);
+    }
   };
 
   return (
@@ -51,7 +72,7 @@ function EventForm(props) {
             onChange={(e) => setTitle(e.target.value)}
           />
           <div>
-            <label for="types">Choose a type: </label>
+            <label>Choose a type: </label>
             <select
               name="types"
               id="event-types"
@@ -63,6 +84,29 @@ function EventForm(props) {
               <option value="other">Other</option>
             </select>
           </div>
+          {selectValue === "meeting" && (
+            <div>
+              <span id="flexible-text">Flexible</span>
+              <input
+                type="checkbox"
+                name="flexible"
+                id="flexible"
+                onChange={changeFlexible}
+              />
+            </div>
+          )}
+          <input
+            id="start-time"
+            type="time"
+            placeholder="Start Time"
+            // onChange={(e) => setTitle(e.target.value)}
+          />
+          <input
+            id="end-time"
+            type="time"
+            placeholder="End Time"
+            // onChange={(e) => setTitle(e.target.value)}
+          />
           <input type="submit" value="Submit" />
         </form>
       </div>

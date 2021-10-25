@@ -5,6 +5,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import RightClickElement from "./RightClickElement";
 import EventForm from "./EventForm";
+import energyCircle from "./images/Vector.png";
 import "./App.css";
 
 const Calendar = () => {
@@ -24,6 +25,8 @@ const Calendar = () => {
       start: "2021-10-24T13:00:00",
       end: "2021-10-24T18:00:00",
       blocked: false,
+      flexible: true,
+      color: "#538dff",
     },
     {
       id: 3,
@@ -80,14 +83,13 @@ const Calendar = () => {
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
           initialView="timeGridWeek"
           headerToolbar={{
-            center: "dayGridMonth,timeGridWeek,timeGridDay",
+            center: "timeGridWeek",
           }}
           editable="true"
-          weekends="true"
           eventOverlap={false}
           dayMaxEvents="true"
           events={events} //"https://fullcalendar.io/demo-events.json?overload-day"
-          eventColor="#538DFF"
+          eventColor="#1565c0" //"#538DFF"
           nowIndicator
           selectable="true"
           select={handleForm}
@@ -100,7 +102,7 @@ const Calendar = () => {
             if (event.blocked) {
               info.el.classList.add("blocked");
             }
-            if (event.type === "task") {
+            if (event.type === "task" || event.type === "Task") {
               var parentNode =
                 info.el.childNodes[0].childNodes[0].childNodes[1];
               var titleNode = parentNode.childNodes[0];
@@ -120,6 +122,13 @@ const Calendar = () => {
                 if (e.target.checked) title.classList.add("task-checked");
                 else title.classList.remove("task-checked");
               });
+            }
+            if (event.type === "meeting" && event.flexible) {
+              var mainNode = info.el.childNodes[0].childNodes[0];
+              var img = document.createElement("div");
+              img.setAttribute("class", "flexible-event");
+              img.innerHTML = `<img src=${energyCircle} alt="flexible" class="flexible-icon" />`;
+              mainNode.appendChild(img);
             }
             info.el.addEventListener(
               "contextmenu",

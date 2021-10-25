@@ -18,7 +18,8 @@
   margin: auto auto;
 }
 
-button {
+button,
+a {
   cursor: pointer;
 }
 
@@ -30,7 +31,7 @@ button {
     #ebedef 10px,
     #eaecee 20px
   );
-  border-left: #538dff solid 3px;
+  border-left: #538dff solid 3px !important;
 }
 
 .blocked > .fc-event-main {
@@ -72,6 +73,7 @@ button {
 }
 
 .event-settings-delete {
+  margin-right: 10px;
   background-color: red;
   color: white;
   border-radius: 10%;
@@ -113,4 +115,21 @@ button {
 
 .event-form-title > h4 {
   margin-right: 10px;
+}
+
+.flexible-event {
+  background-color: transparent;
+  width: 20px;
+}
+
+.flexible-icon {
+  margin-right: 0;
+  width: 15px;
+}
+
+.event-setting-buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 }

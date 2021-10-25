@@ -21,6 +21,10 @@ function RightClickElement(props) {
     props.setRightclick(false);
   };
 
+  const closeRightClick = () => {
+    props.setRightclick(false);
+  };
+
   if (props.rightclick) {
     return (
       <div
@@ -32,9 +36,14 @@ function RightClickElement(props) {
           backgroundColor: "white",
         }}
       >
-        <button className="event-settings-delete" onClick={deleteEvent}>
-          Delete
-        </button>
+        <div className="event-setting-buttons">
+          <button className="event-settings-delete" onClick={deleteEvent}>
+            Delete
+          </button>
+          <button className="event-settings-close" onClick={closeRightClick}>
+            x
+          </button>
+        </div>
         {!props.rightClickevent.blocked ? (
           <div>
             <p>Change Color</p>
