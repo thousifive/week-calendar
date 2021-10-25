@@ -1,93 +1,156 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import RightClickElement from "./RightClickElement";
+import EventForm from "./EventForm";
 import "./App.css";
 
 const Calendar = () => {
-  const [rightclick, setRightclick] = useState(false);
-  const [postion, setPostion] = useState("");
-  const handleClick = (e) => {
-    e = e || window.event;
-    switch (e.which) {
-      case 1:
-        alert("left");
-        break;
-      case 2:
-        alert("middle");
-        break;
-      case 3:
-        setPostion(e.clientX + "px, " + e.clientY + "px");
-        setRightclick(true);
-        break;
-    }
-  };
-
-  const events = [
+  const eventArr = [
     {
       id: 1,
       title: "event 1",
+      type: "task",
       start: "2021-10-26T10:00:00",
       end: "2021-10-26T12:00:00",
+      blocked: false,
     },
     {
       id: 2,
       title: "event 2",
+      type: "meeting",
       start: "2021-10-24T13:00:00",
       end: "2021-10-24T18:00:00",
+      blocked: false,
     },
-    { id: 3, title: "event 3", start: "2021-06-17", end: "2021-06-20" },
+    {
+      id: 3,
+      title: "event 3",
+      type: "other",
+      start: "2021-10-25",
+      end: "2021-10-25",
+      blocked: false,
+    },
+    {
+      id: 4,
+      title: "Blocked",
+      type: "",
+      start: "2021-10-28T13:00:00",
+      end: "2021-10-28T17:00:00",
+      blocked: true,
+    },
+    {
+      id: 5,
+      title: "Blocked",
+      type: "",
+      start: "2021-10-29T14:00:00",
+      end: "2021-10-29T16:00:00",
+      blocked: true,
+    },
   ];
+
+  const [rightclick, setRightclick] = useState(false);
+  const [events, setEvents] = useState(eventArr);
+  const [event, setEvent] = useState();
+  const [trueEvent, setTrueEvent] = useState("");
+  const [form, setForm] = useState(false);
+  const [selectEvent, setSelectEvent] = useState();
+
+  const handleClick = (e, ev) => {
+    ev = ev || window.event;
+    if (ev.which === 3) {
+      setEvent(events.filter((x) => x.id === Number(e.event.id))[0]);
+      setTrueEvent(ev);
+      setRightclick(true);
+    }
+  };
+
+  const handleForm = (e) => {
+    setForm(!form);
+    setSelectEvent(e);
+  };
+
   return (
     <div className="main-div">
-      {rightclick ? (
-        <div
-          className="event-settings"
-          style={{
-            transform: `translate(${postion})`,
-            zIndex: "3",
-            backgroundColor: "white",
-          }}
-        >
-          <p>Change Color</p>
-          <div className="event-settings-color">
-            <button
-              className="event-settings-color-button"
-              style={{ backgroundColor: "#62CFA7" }}
-            ></button>
-            <button
-              className="event-settings-color-button"
-              style={{ backgroundColor: "#27A577" }}
-            ></button>
-          </div>
-        </div>
-      ) : null}
       <div id="calendar">
         <FullCalendar
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
           initialView="timeGridWeek"
           headerToolbar={{
             center: "dayGridMonth,timeGridWeek,timeGridDay",
-            //   center: "dayGridMonth,timeGridWeek,timeGridDay new",
           }}
           editable="true"
-          dayMaxEvents="true" // when too many events in a day, show the popover
+          weekends="true"
+          eventOverlap={false}
+          dayMaxEvents="true"
           events={events} //"https://fullcalendar.io/demo-events.json?overload-day"
           eventColor="#538DFF"
           nowIndicator
+          selectable="true"
+          select={handleForm}
+          eventAdd={(e) => {
+            console.log(e);
+          }}
           eventDidMount={(info) => {
+            info.el.setAttribute("id", info.event.id);
+            var event = events.filter((x) => x.id === Number(info.event.id))[0];
+            if (event.blocked) {
+              info.el.classList.add("blocked");
+            }
+            if (event.type === "task") {
+              var parentNode =
+                info.el.childNodes[0].childNodes[0].childNodes[1];
+              var titleNode = parentNode.childNodes[0];
+              var newNode = document.createElement("div");
+              newNode.innerHTML = `<div class="fc-event-title fc-sticky">
+              <input type="checkbox" id="task-checkbox-${info.event.id}" class="fc-event-checkbox" />
+              <span id="event-title-${info.event.id}" class="fc-event-title-text">${event.title}</span>
+              </div>`;
+              parentNode.replaceChild(newNode, titleNode);
+              var checkbox = document.getElementById(
+                `task-checkbox-${info.event.id}`
+              );
+              checkbox.addEventListener("change", (e) => {
+                var title = document.getElementById(
+                  `event-title-${info.event.id}`
+                );
+                if (e.target.checked) title.classList.add("task-checked");
+                else title.classList.remove("task-checked");
+              });
+            }
             info.el.addEventListener(
               "contextmenu",
               (ev) => {
                 ev.preventDefault();
-                handleClick(ev);
+                handleClick(info, ev);
               },
               true
             );
           }}
+          eventClick={(info) => {}}
         />
       </div>
+      {rightclick && (
+        <RightClickElement
+          rightclick={rightclick}
+          setRightclick={setRightclick}
+          events={events}
+          setEvents={setEvents}
+          rightClickevent={event}
+          pageX={trueEvent.pageX}
+          pageY={trueEvent.pageY}
+        />
+      )}
+      {form && (
+        <EventForm
+          selectEvent={selectEvent}
+          events={events}
+          setForm={setForm}
+          setEvents={setEvents}
+        />
+      )}
     </div>
   );
 };

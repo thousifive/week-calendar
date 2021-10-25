@@ -18,9 +18,29 @@
   margin: auto auto;
 }
 
+button {
+  cursor: pointer;
+}
+
+.blocked {
+  background: repeating-linear-gradient(
+    45deg,
+    #f4f6f6,
+    #f2f4f4 10px,
+    #ebedef 10px,
+    #eaecee 20px
+  );
+  border-left: #538dff solid 3px;
+}
+
+.blocked > .fc-event-main {
+  color: #538dff;
+}
+
 .event-settings {
   position: absolute;
-  padding-top: 0;
+  padding-top: 5px;
+  padding-bottom: 5px;
   padding-left: 6px;
   display: flex;
   flex-direction: column;
@@ -49,4 +69,47 @@
   border: 1px solid black;
   margin-right: 10px;
   padding: 0.5rem;
+}
+
+.event-settings-delete {
+  background-color: red;
+  color: white;
+  border-radius: 10%;
+}
+
+.fc-event-checkbox {
+  width: 20px;
+  background-color: transparent;
+}
+
+.task-checked {
+  text-decoration: line-through;
+}
+
+.event-form {
+  width: 240px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  border: 1px solid black;
+  padding: 10px;
+  background-color: white;
+}
+
+.event-form-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.event-form-inputs > form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.event-form-title > h4 {
+  margin-right: 10px;
 }
